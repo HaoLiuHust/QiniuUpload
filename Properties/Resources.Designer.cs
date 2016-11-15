@@ -68,5 +68,41 @@ namespace QiniuUpload.Properties {
                 return ResourceManager.GetString("ConfigFilePath", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   查找类似 上传失败，请检查账号设置 的本地化字符串。
+        /// </summary>
+        internal static string ErrorMessage {
+            get {
+                return ResourceManager.GetString("ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 还没有上传，请上传后再复制 的本地化字符串。
+        /// </summary>
+        internal static string NoUrlMessage {
+            get {
+                return ResourceManager.GetString("NoUrlMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 复制成功 的本地化字符串。
+        /// </summary>
+        internal static string ResultMessage {
+            get {
+                return ResourceManager.GetString("ResultMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 上传成功 的本地化字符串。
+        /// </summary>
+        internal static string SuccessMessage {
+            get {
+                return ResourceManager.GetString("SuccessMessage", resourceCulture);
+            }
+        }
     }
 }

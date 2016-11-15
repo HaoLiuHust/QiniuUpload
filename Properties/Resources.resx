@@ -120,4 +120,16 @@
   <data name="ConfigFilePath" xml:space="preserve">
     <value>./Account.xml</value>
   </data>
+  <data name="ErrorMessage" xml:space="preserve">
+    <value>上传失败，请检查账号设置</value>
+  </data>
+  <data name="NoUrlMessage" xml:space="preserve">
+    <value>还没有上传，请上传后再复制</value>
+  </data>
+  <data name="ResultMessage" xml:space="preserve">
+    <value>复制成功</value>
+  </data>
+  <data name="SuccessMessage" xml:space="preserve">
+    <value>上传成功</value>
+  </data>
 </root>

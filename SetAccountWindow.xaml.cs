@@ -24,6 +24,16 @@ namespace QiniuUpload
         public SetAccountWindow()
         {
             InitializeComponent();
+
+            SpaceName.Text = MainWindow.UserAccount.SpaceName;
+            SecretKey.Text = MainWindow.UserAccount.SecretKey;
+            AccessKey.Text = MainWindow.UserAccount.AccessKey;
+            if (MainWindow.UserAccount.HostName.StartsWith(@"https:\\"))
+            {
+                HostName.Text = MainWindow.UserAccount.HostName.Substring(@"https:\\".Length);
+            }
+            else
+                HostName.Text = MainWindow.UserAccount.HostName;
         }
 
         private void OK_Button_Click(object sender, RoutedEventArgs e)
@@ -32,6 +42,10 @@ namespace QiniuUpload
             MainWindow.UserAccount.SecretKey = SecretKey.Text;
             MainWindow.UserAccount.AccessKey = AccessKey.Text;
             MainWindow.UserAccount.HostName = HostName.Text;
+            if(!HostName.Text.EndsWith("https"))
+            {
+                MainWindow.UserAccount.HostName = @"https:\\" + HostName.Text;
+            }
             using (Stream s = File.OpenWrite(Properties.Resources.ConfigFilePath))
             {
                 XmlSerializer xs = new XmlSerializer(typeof(AccountInfo));

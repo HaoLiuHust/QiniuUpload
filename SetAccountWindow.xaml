@@ -15,19 +15,19 @@
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="85*"/>
+            <ColumnDefinition Width="209*"/>
         </Grid.ColumnDefinitions>
-        <Label Content="七牛空间名" Grid.Column="0" Grid.Row="0" Width="70" Height="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <Label Content="AccessKey" Grid.Column="0" Grid.Row="1" Width="70" Height="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <Label Content="SecretKey" Grid.Column="0" Grid.Row="2" Width="70" Height="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <Label Content="域名" Grid.Column="0" Grid.Row="3" Width="70" Height="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <Button x:Name="OK_Button" Content="确定" Grid.Column="1" HorizontalAlignment="Left" Grid.Row="4" Width="52.7" Height="20" Margin="20,0,0,0" Click="OK_Button_Click"/>
-        <Button x:Name="Cancel_Button" Content="取消" Grid.Column="1" HorizontalAlignment="Left" Grid.Row="4" Width="52.7" Height="20" Margin="90,0,0,0" Click="Cancel_Button_Click"/>
-        <TextBox x:Name="SpaceName" Grid.Column="1" Grid.Row="0" TextWrapping="Wrap" Width="200" Height="20"/>
-        <TextBox x:Name="AccessKey" Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Width="200" Height="20"/>
-        <TextBox x:Name="SecretKey" Grid.Column="1" Grid.Row="2" TextWrapping="Wrap" Width="200" Height="20"/>
-        <TextBox x:Name="HostName" Grid.Column="1" Grid.Row="3" TextWrapping="Wrap" Width="200" Height="20"/>
+        <Label Content="七牛空间名" Grid.Column="0" Grid.Row="0" Width="70" Height="26" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="8,4,7,4"/>
+        <Label Content="AccessKey" Grid.Column="0" Grid.Row="1" Width="70" Height="26" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="8,4,7,4"/>
+        <Label Content="SecretKey" Grid.Column="0" Grid.Row="2" Width="70" Height="26" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="8,4,7,4"/>
+        <Label Content="域名https:\\" Grid.Column="0" Grid.Row="3" Width="86" Height="26" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="8,4,200,4" Grid.ColumnSpan="2"/>
+        <Button x:Name="OK_Button" Content="确定" Grid.Column="1" HorizontalAlignment="Left" Grid.Row="4" Width="53" Margin="20,6,0,7" Click="OK_Button_Click"/>
+        <Button x:Name="Cancel_Button" Content="取消" Grid.Column="1" HorizontalAlignment="Left" Grid.Row="4" Width="53" Margin="90,6,0,7" Click="Cancel_Button_Click"/>
+        <TextBox x:Name="SpaceName" Grid.Column="1" Grid.Row="0" TextWrapping="Wrap" Margin="8,7"/>
+        <TextBox x:Name="AccessKey" Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Margin="8,7" FontSize="8"/>
+        <TextBox x:Name="SecretKey" Grid.Column="1" Grid.Row="2" TextWrapping="Wrap" Margin="8,7" FontSize="8"/>
+        <TextBox x:Name="HostName" Grid.Column="1" Grid.Row="3" TextWrapping="Wrap" Margin="8,7"/>
 
     </Grid>
 </Window>
