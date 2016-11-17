@@ -118,10 +118,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ConfigFilePath" xml:space="preserve">
-    <value>./Account.xml</value>
+    <value>.\Account.xml</value>
   </data>
   <data name="ErrorMessage" xml:space="preserve">
     <value>上传失败，请检查账号设置</value>
+  </data>
+  <data name="ImageSavePathDir" xml:space="preserve">
+    <value>.\Images</value>
   </data>
   <data name="NoUrlMessage" xml:space="preserve">
     <value>还没有上传，请上传后再复制</value>

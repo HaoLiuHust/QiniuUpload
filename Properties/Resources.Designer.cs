@@ -61,7 +61,7 @@ namespace QiniuUpload.Properties {
         }
         
         /// <summary>
-        ///   查找类似 ./Account.xml 的本地化字符串。
+        ///   查找类似 .\Account.xml 的本地化字符串。
         /// </summary>
         internal static string ConfigFilePath {
             get {
@@ -75,6 +75,15 @@ namespace QiniuUpload.Properties {
         internal static string ErrorMessage {
             get {
                 return ResourceManager.GetString("ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 .\Images 的本地化字符串。
+        /// </summary>
+        internal static string ImageSavePathDir {
+            get {
+                return ResourceManager.GetString("ImageSavePathDir", resourceCulture);
             }
         }
         
