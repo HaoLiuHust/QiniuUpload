@@ -16,10 +16,10 @@ namespace QiniuUpload
         {
             BucketManager lBktMgr = new BucketManager(iMac);
 
-            Qiniu.Storage.Model.StatResult lRslt = null;
+           // Qiniu.Storage.Model.StatResult lRslt = null;
             //StringBuilder lOpsb = new StringBuilder();
             HttpResult result = null;
-            result = lBktMgr.batch(StringUtils.encodedEntry(iBucket, iFileName));
+            result = lBktMgr.batch("op=/stat/" + StringUtils.encodedEntry(iBucket, iFileName));
 
            // lRslt = lBktMgr.stat(iBucket, iFileName);
             if(result == null)
