@@ -18,7 +18,7 @@
             <Button x:Name="CBViewerButton" Content="监控剪切板"  HorizontalAlignment="Left" Width="80" Height="24" Margin="10,0,0,0" Click="CBViewerButton_Click"/>
             <Button x:Name="InformationButton" Content="关于"  HorizontalAlignment="Left" Width="80" Height="24" Margin="10,0,0,0"/>
         </StackPanel>
-        <DockPanel x:Name="UpLoadZone"  Grid.Row="1" Width="412" Height="200" MouseLeftButtonDown="UpLoadZone_MouseLeftButtonDown" Background="Transparent" Grid.ColumnSpan="2" Margin="0,0,0,36" Grid.RowSpan="2">
+        <DockPanel x:Name="UpLoadZone"  Grid.Row="1" Width="412" Height="180" MouseLeftButtonDown="UpLoadZone_MouseLeftButtonDown" Background="Transparent" Grid.ColumnSpan="2" Margin="0,0,0,36" Grid.RowSpan="2">
         </DockPanel>
         <Grid Grid.Row="2" Margin="10,0,0,10">
             <Grid.ColumnDefinitions>

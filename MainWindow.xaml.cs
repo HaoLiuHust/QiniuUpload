@@ -80,9 +80,7 @@ namespace QiniuUpload
         {
             UserAccount = new AccountInfo();
             putPolicy = new PutPolicy();
-            putPolicy.Scope = UserAccount.SpaceName;
-            putPolicy.SetExpires(3600*24*30);
-            putPolicy.DeleteAfterDays = 365;
+            
             if (File.Exists(Properties.Resources.ConfigFilePath))
             {
                 XmlSerializer xs = new XmlSerializer(typeof(AccountInfo));
@@ -312,6 +310,8 @@ namespace QiniuUpload
             }
             if (!lSkip)
             {
+                putPolicy.Scope = UserAccount.SpaceName;
+                putPolicy.SetExpires(3600 * 24 * 30);
                 string lUploadToken = Auth.createUploadToken(putPolicy, lMac);
                 UploadManager lUploadMgr = new UploadManager();
                 lUploadMgr.uploadFile(filepath, filename, lUploadToken, null, new UpCompletionHandler(delegate (string key, ResponseInfo responseinfo, string response)
@@ -333,8 +333,11 @@ namespace QiniuUpload
                 }));                
             }
 
-            if(lUpLoadSuccess)
+            if (lUpLoadSuccess)
+            {
                 DisplayImage(filepath);
+                MessageStr = URL;
+            }
 
             return lUpLoadSuccess;
         }
@@ -344,14 +347,32 @@ namespace QiniuUpload
             if(File.Exists(filepath))
             {
                 this.UpLoadZone.Children.Clear();
-                Image img = new Image() { Width = this.UpLoadZone.Width, Height = this.UpLoadZone.Height, Stretch = Stretch.UniformToFill };
-
-                using (FileStream fs = new FileStream(filepath, FileMode.Open, FileAccess.Read))
+                Image img = new Image() { Width = this.UpLoadZone.Width, Height = this.UpLoadZone.Height, Stretch = Stretch.Uniform };
+                BitmapDecoder bd = null;
+                FileStream fs = new FileStream(filepath, FileMode.Open, FileAccess.Read);                    
+                string filetype = System.IO.Path.GetExtension(filepath);
+                filetype = filetype.ToLower();
+                    
+                switch(filetype)
                 {
-                    BmpBitmapDecoder bd = new BmpBitmapDecoder(fs, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
-                    img.Source = bd.Frames[0];
-                    this.UpLoadZone.Children.Add(img);
-                }               
+                    case ".bmp":
+                        {
+                            bd = new BmpBitmapDecoder(fs, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
+                        }
+                        break;
+                    case ".png":
+                        {
+                            bd = new PngBitmapDecoder(fs, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
+                        }
+                        break;
+                    case ".jpg":
+                        {
+                            bd = new JpegBitmapDecoder(fs, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
+                        }
+                        break;                                  
+                }
+                img.Source = bd.Frames[0];
+                this.UpLoadZone.Children.Add(img);
             }
             
         }
