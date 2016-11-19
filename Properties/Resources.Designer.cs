@@ -79,6 +79,15 @@ namespace QiniuUpload.Properties {
         }
         
         /// <summary>
+        ///   查找类似 .\History.log 的本地化字符串。
+        /// </summary>
+        internal static string HistoryLog {
+            get {
+                return ResourceManager.GetString("HistoryLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 .\Images 的本地化字符串。
         /// </summary>
         internal static string ImageSavePathDir {
@@ -111,6 +120,15 @@ namespace QiniuUpload.Properties {
         internal static string SuccessMessage {
             get {
                 return ResourceManager.GetString("SuccessMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 上传中，请稍候... 的本地化字符串。
+        /// </summary>
+        internal static string UpLoading {
+            get {
+                return ResourceManager.GetString("UpLoading", resourceCulture);
             }
         }
     }

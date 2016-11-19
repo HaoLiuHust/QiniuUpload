@@ -123,6 +123,9 @@
   <data name="ErrorMessage" xml:space="preserve">
     <value>上传失败，请检查账号设置</value>
   </data>
+  <data name="HistoryLog" xml:space="preserve">
+    <value>.\History.log</value>
+  </data>
   <data name="ImageSavePathDir" xml:space="preserve">
     <value>.\Images</value>
   </data>
@@ -134,5 +137,8 @@
   </data>
   <data name="SuccessMessage" xml:space="preserve">
     <value>上传成功</value>
+  </data>
+  <data name="UpLoading" xml:space="preserve">
+    <value>上传中，请稍候...</value>
   </data>
 </root>

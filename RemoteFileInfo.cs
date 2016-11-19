@@ -17,10 +17,17 @@ namespace QiniuUpload
             BucketManager lBktMgr = new BucketManager(iMac);
 
             Qiniu.Storage.Model.StatResult lRslt = null;
-            StringBuilder lOpsb = new StringBuilder();
-            lRslt = lBktMgr.stat(iBucket, iFileName);
+            //StringBuilder lOpsb = new StringBuilder();
+            HttpResult result = null;
+            result = lBktMgr.batch(StringUtils.encodedEntry(iBucket, iFileName));
+
+           // lRslt = lBktMgr.stat(iBucket, iFileName);
+            if(result == null)
+            {
+                return string.Empty;
+            }
             StatResponse lStatResponse = null;
-            lStatResponse = JsonConvert.DeserializeObject<StatResponse>(lRslt.Response);
+            lStatResponse = JsonConvert.DeserializeObject<StatResponse>(result.Response);
             if (lStatResponse.CODE == 200)
                 return lStatResponse.DATA.hash;
             else

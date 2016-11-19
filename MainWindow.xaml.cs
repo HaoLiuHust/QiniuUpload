@@ -22,6 +22,7 @@ using Qiniu.Util;
 using Qiniu.Storage;
 using Qiniu.Http;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace QiniuUpload
 {
@@ -36,7 +37,8 @@ namespace QiniuUpload
         private HwndSource hWndSource = null;
         private bool IsViewing = false;
         private string _messagestr = Properties.Resources.NoUrlMessage;
-        
+        private Dictionary<string, List<string>> historyLog;
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public String MessageStr
@@ -57,12 +59,21 @@ namespace QiniuUpload
             InitializeComponent();
             this.Loaded += MainWindow_Loaded;
             this.Closing += MainWindow_Closing;
+
+            System.Windows.Controls.TextBlock tb = new System.Windows.Controls.TextBlock();
+            tb.VerticalAlignment = VerticalAlignment.Center;
+            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+            tb.FontSize = 20;
+            tb.Text = "复制、截图或点击此处选择图片上传";
+            this.UpLoadZone.Children.Add(tb);
         }
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (IsViewing)
                 StopCBViewer();
+
+            WriteHistoryLog();
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -70,7 +81,7 @@ namespace QiniuUpload
             UserAccount = new AccountInfo();
             putPolicy = new PutPolicy();
             putPolicy.Scope = UserAccount.SpaceName;
-            putPolicy.SetExpires(3600);
+            putPolicy.SetExpires(3600*24*30);
             putPolicy.DeleteAfterDays = 365;
             if (File.Exists(Properties.Resources.ConfigFilePath))
             {
@@ -89,8 +100,56 @@ namespace QiniuUpload
             System.Windows.Data.Binding binding = new System.Windows.Data.Binding();
             binding.Source = this;
             binding.Path = new PropertyPath("MessageStr");
-
             BindingOperations.SetBinding(this.MessageText, TextBlock.TextProperty, binding);
+            historyLog = new Dictionary<string, List<string>>();
+            LoadHistory(Properties.Resources.HistoryLog, ref historyLog);
+        }
+
+        private void LoadHistory(string logfile, ref Dictionary<string, List<string> > historylog)
+        {
+            if(File.Exists(logfile))
+            {
+                if(historylog == null)
+                {
+                    historylog = new Dictionary<string, List<string>>();
+                }
+                historylog.Clear();
+
+                using (StreamReader fs = new StreamReader(logfile, Encoding.Default))
+                {
+                    string line = fs.ReadLine();                  
+                    string[] linesplit = line.Split();
+                    if(linesplit.Length >= 2)
+                    {
+                        string hashkey = linesplit[0];
+                        if(!historylog.ContainsKey(hashkey))
+                        {
+                            historylog[hashkey] = new List<string>(linesplit);
+                            historylog[hashkey].RemoveAt(0);
+                        }
+                        
+                    }
+                }
+            }
+        }
+
+        private void WriteHistoryLog()
+        {
+            if(historyLog.Count > 0)
+            {
+                using (StreamWriter sw = new StreamWriter(Properties.Resources.HistoryLog, false))
+                {
+                    StringBuilder sb = new StringBuilder();
+                    foreach(var pair in historyLog)
+                    {
+                        sb.Clear();
+                        sb.Append(pair.Key);
+                        sb.Append(" ");
+                        sb.Append(string.Join(" ", pair.Value.ToArray()));
+                        sw.WriteLine(sb);
+                    }
+                }
+            }
         }
 
         private void AccountButton_Click(object sender, RoutedEventArgs e)
@@ -120,8 +179,9 @@ namespace QiniuUpload
 
                 if(FileBrowser.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
+                    MessageStr = Properties.Resources.UpLoading;
                     UpLoadFile(FileBrowser.FileName);
-                    MessageStr = URL;
+                    MessageStr = string.IsNullOrEmpty(URL)?MessageStr:URL;
                 }
             }           
         }
@@ -190,6 +250,8 @@ namespace QiniuUpload
         {
             if(System.Windows.Clipboard.ContainsImage())
             {
+                MessageStr = Properties.Resources.UpLoading;
+
                 BmpBitmapEncoder enc = new BmpBitmapEncoder();
                 enc.Frames.Add(BitmapFrame.Create(System.Windows.Clipboard.GetImage()));
 
@@ -198,26 +260,54 @@ namespace QiniuUpload
                 using (FileStream fs = new FileStream(lSaveFilePath, FileMode.OpenOrCreate, FileAccess.Write))
                 {
                     enc.Save(fs);
+                    fs.Close();
                 }
 
-                DisplayImage(lSaveFilePath);
-
+                //because unkown reason, when use wechat snapshot hotkey, the message will process twice, to avoid this, check whether we save the same file
+                string lLocalHash = QETag.hash(lSaveFilePath);
+                if(historyLog.ContainsKey(lLocalHash))
+                {
+                    File.Delete(lSaveFilePath);
+                    URL = CreateURL(historyLog[lLocalHash][0]);
+                    lSaveFilePath = System.IO.Path.Combine(Properties.Resources.ImageSavePathDir, historyLog[lLocalHash][0]);                   
+                }
+                else
+                {                   
+                    if(!UpLoadFile(lSaveFilePath))
+                    {
+                        File.Delete(lSaveFilePath);
+                    }
+                }                
             }
         }
 
-        private void UpLoadFile(string filepath)
+        private bool UpLoadFile(string filepath)
         {
             string filename = System.IO.Path.GetFileName(filepath);
             Qiniu.Util.Mac lMac = new Qiniu.Util.Mac(UserAccount.AccessKey, UserAccount.SecretKey);
             string lRemoteHash = RemoteFileInfo.RemoteFileStat(lMac, UserAccount.SpaceName, filename);
             bool lSkip = false;
+            bool lUpLoadSuccess = false;
+            //check local
+            string lLocalHash = String.Empty;
             if (!string.IsNullOrEmpty(lRemoteHash))
             {
-                string lLocalHash = QETag.hash(filepath);
-                if (string.Equals(lLocalHash, lRemoteHash))
+                lLocalHash = QETag.hash(filepath);
+
+                if (historyLog.ContainsKey(lLocalHash))
+                {
+                    if(historyLog[lLocalHash].Contains(filename))
+                    {
+                        lSkip = true;
+                        URL = CreateURL(filename);
+                        lUpLoadSuccess = true;
+                    }                   
+                }
+                else if (string.Equals(lLocalHash, lRemoteHash))
                 {
                     lSkip = true;
-                    URL = System.IO.Path.Combine(UserAccount.HostName, filename);
+                    URL = CreateURL(filename);
+                    lUpLoadSuccess = true;
                 }
             }
             if (!lSkip)
@@ -233,10 +323,20 @@ namespace QiniuUpload
                     else
                     {
                         MessageStr = Properties.Resources.SuccessMessage;
-                        URL = System.IO.Path.Combine(UserAccount.HostName, filename);
+                        if (historyLog.ContainsKey(lLocalHash))
+                        {
+                            historyLog[lLocalHash].Add(filename);
+                        }
+                        URL = CreateURL(filename);
+                        lUpLoadSuccess = true;
                     }
-                }));
+                }));                
             }
+
+            if(lUpLoadSuccess)
+                DisplayImage(filepath);
+
+            return lUpLoadSuccess;
         }
 
         private void DisplayImage(string filepath)
@@ -261,8 +361,13 @@ namespace QiniuUpload
             DateTime lNowTime = DateTime.Now;
             Random rd = new Random();
             int ranNum = rd.Next(1, 1000);
-            string UniqueFileName = lNowTime.ToString("yymmddhhmmss")+ranNum.ToString()+".bmp";
+            string UniqueFileName = lNowTime.ToString("yyyyMMddHHmmss")+ranNum.ToString()+".bmp";
             return UniqueFileName;
+        }
+
+        private string CreateURL(string filename)
+        {
+            return System.IO.Path.Combine(UserAccount.HostName, filename);
         }
     }
 }
