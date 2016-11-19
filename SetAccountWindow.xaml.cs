@@ -28,7 +28,7 @@ namespace QiniuUpload
             SpaceName.Text = MainWindow.UserAccount.SpaceName;
             SecretKey.Text = MainWindow.UserAccount.SecretKey;
             AccessKey.Text = MainWindow.UserAccount.AccessKey;
-            if (MainWindow.UserAccount.HostName.StartsWith(@"https:\\"))
+            if (!string.IsNullOrEmpty(MainWindow.UserAccount.HostName) && MainWindow.UserAccount.HostName.StartsWith(@"https:\\"))
             {
                 HostName.Text = MainWindow.UserAccount.HostName.Substring(@"https:\\".Length);
             }
